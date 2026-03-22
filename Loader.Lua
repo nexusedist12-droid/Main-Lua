@@ -1,111 +1,106 @@
 local _ENV = (getgenv or getrenv or getfenv)()
 
 ---------------------------------------------------
--- 🌐 CONFIG (AUTO UPDATE)
+-- 🧠 CONFIG
 ---------------------------------------------------
 
-local VERSION = "1.0.0"
-local VERSION_URL = "https://raw.githubusercontent.com/nexusedist12-droid/Main-Lua/main/version.txt"
+local Scripts = {
+    {
+        GameId = 994732206,
+        UrlPath = "Main.lua"
+    },
+    {
+        PlacesIds = {10260193230},
+        UrlPath = "MemeSea.lua"
+    }
+}
 
 ---------------------------------------------------
--- 📊 LOGS TIPO HACKER
+-- 🌐 TU REPO (ESTO ES LA CLAVE)
+---------------------------------------------------
+
+local urls = {}
+urls.Repository = "https://raw.githubusercontent.com/nexusedist12-droid/Main-Lua/main/"
+
+---------------------------------------------------
+-- ⚡ ANTI SPAM EXEC
+---------------------------------------------------
+
+if _ENV.NexusDebounce and tick() - _ENV.NexusDebounce < 5 then
+    return
+end
+_ENV.NexusDebounce = tick()
+
+---------------------------------------------------
+-- 📊 LOGS
 ---------------------------------------------------
 
 local function log(msg)
     print("[NEXUS] > "..msg)
 end
 
-log("Inicializando loader...")
-task.wait(0.2)
+log("Loader iniciado...")
 
 ---------------------------------------------------
--- 🔄 AUTO UPDATE CHECK
+-- 🌐 FETCHER (TIPO REDZ)
 ---------------------------------------------------
 
-pcall(function()
-    local latest = game:HttpGet(VERSION_URL)
+local fetcher = {}
 
-    if latest and latest ~= VERSION then
-        log("Nueva versión detectada: "..latest)
-        log("Actualizando...")
+function fetcher.get(path)
+    local success, res = pcall(function()
+        return game:HttpGet(urls.Repository .. path)
+    end)
+
+    if success then
+        return res
     else
-        log("Versión actual: "..VERSION)
+        warn("❌ Error al obtener:", path)
     end
-end)
+end
+
+function fetcher.load(path)
+    local raw = fetcher.get(path)
+    if not raw then return end
+
+    local func, err = loadstring(raw)
+
+    if func then
+        return func()
+    else
+        warn("❌ Error en script:", err)
+    end
+end
 
 ---------------------------------------------------
--- 🔥 SCRIPTS (TUS JUEGOS)
----------------------------------------------------
-
-local Scripts = {
-    {
-        Name = "Blox Fruits",
-        GameIds = {994732206},
-        Url = "https://raw.githubusercontent.com/nexusedist12-droid/Main-Lua/main/Main.lua"
-    },
-    {
-        Name = "MemeSea",
-        PlaceIds = {10260193230},
-        Url = "https://raw.githubusercontent.com/nexusedist12-droid/Main-Lua/main/MemeSea.Lua"
-    }
-}
-
----------------------------------------------------
--- 🧠 DETECTAR JUEGO
+-- 🎮 DETECTAR JUEGO
 ---------------------------------------------------
 
 local placeId = game.PlaceId
 local gameId = game.GameId
 
-log("Detectando juego...")
-
-local function IsGame(script)
-    if script.PlaceIds then
-        for _,id in pairs(script.PlaceIds) do
-            if id == placeId then
-                return true
-            end
+local function IsPlace(script)
+    if script.PlacesIds then
+        for _,id in pairs(script.PlacesIds) do
+            if id == placeId then return true end
         end
     end
 
-    if script.GameIds then
-        for _,id in pairs(script.GameIds) do
-            if id == gameId then
-                return true
-            end
-        end
+    if script.GameId and script.GameId == gameId then
+        return true
     end
 
     return false
 end
 
 ---------------------------------------------------
--- 🚀 CARGA PRINCIPAL
+-- 🚀 EJECUTAR
 ---------------------------------------------------
 
 for _,script in pairs(Scripts) do
-    if IsGame(script) then
-        log("Juego detectado: "..script.Name)
-        log("Cargando script...")
-
-        local success, response = pcall(function()
-            return game:HttpGet(script.Url)
-        end)
-
-        if success then
-            log("Script descargado ✔")
-
-            local func, err = loadstring(response)
-
-            if func then
-                log("Ejecutando script...")
-                return func()
-            else
-                warn("❌ Error de sintaxis:", err)
-            end
-        else
-            warn("❌ Error al descargar script")
-        end
+    if IsPlace(script) then
+        log("Cargando: "..script.UrlPath)
+        return fetcher.load(script.UrlPath)
     end
 end
 
@@ -113,4 +108,4 @@ end
 -- ❌ NO SOPORTADO
 ---------------------------------------------------
 
-log("Juego no soportado ❌")
+log("Juego no soportado")
