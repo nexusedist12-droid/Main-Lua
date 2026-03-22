@@ -214,3 +214,6 @@ Settings:Button({
         Window:Destroy()
     end
 })
+print("🔥 FUNCIONA HUB 🔥")
+
+
