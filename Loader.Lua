@@ -1,3 +1,5 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/nexusedist12-droid/Main-Lua/main/Loader.lua"))()
+
 -- 🔥 NEXUS LOADER PRO
 
 repeat task.wait() until game:IsLoaded()
