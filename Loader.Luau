@@ -1,7 +1,40 @@
 local _ENV = (getgenv or getrenv or getfenv)()
 
 ---------------------------------------------------
--- 🔥 CONFIG
+-- 🌐 CONFIG (AUTO UPDATE)
+---------------------------------------------------
+
+local VERSION = "1.0.0"
+local VERSION_URL = "https://raw.githubusercontent.com/nexusedist12-droid/Main-Lua/main/version.txt"
+
+---------------------------------------------------
+-- 📊 LOGS TIPO HACKER
+---------------------------------------------------
+
+local function log(msg)
+    print("[NEXUS] > "..msg)
+end
+
+log("Inicializando loader...")
+task.wait(0.2)
+
+---------------------------------------------------
+-- 🔄 AUTO UPDATE CHECK
+---------------------------------------------------
+
+pcall(function()
+    local latest = game:HttpGet(VERSION_URL)
+
+    if latest and latest ~= VERSION then
+        log("Nueva versión detectada: "..latest)
+        log("Actualizando...")
+    else
+        log("Versión actual: "..VERSION)
+    end
+end)
+
+---------------------------------------------------
+-- 🔥 SCRIPTS (TUS JUEGOS)
 ---------------------------------------------------
 
 local Scripts = {
@@ -18,20 +51,13 @@ local Scripts = {
 }
 
 ---------------------------------------------------
--- ⚡ ANTI DOUBLE EXEC
----------------------------------------------------
-
-if _ENV.NexusLoaded and tick() - _ENV.NexusLoaded < 5 then
-    return
-end
-_ENV.NexusLoaded = tick()
-
----------------------------------------------------
--- 🧠 DETECT GAME
+-- 🧠 DETECTAR JUEGO
 ---------------------------------------------------
 
 local placeId = game.PlaceId
 local gameId = game.GameId
+
+log("Detectando juego...")
 
 local function IsGame(script)
     if script.PlaceIds then
@@ -54,27 +80,31 @@ local function IsGame(script)
 end
 
 ---------------------------------------------------
--- 🚀 LOADER
+-- 🚀 CARGA PRINCIPAL
 ---------------------------------------------------
 
 for _,script in pairs(Scripts) do
     if IsGame(script) then
-        print("🔥 Cargando:", script.Name)
+        log("Juego detectado: "..script.Name)
+        log("Cargando script...")
 
-        local success, result = pcall(function()
+        local success, response = pcall(function()
             return game:HttpGet(script.Url)
         end)
 
         if success then
-            local func, err = loadstring(result)
+            log("Script descargado ✔")
+
+            local func, err = loadstring(response)
 
             if func then
+                log("Ejecutando script...")
                 return func()
             else
-                warn("❌ Error en script:", err)
+                warn("❌ Error de sintaxis:", err)
             end
         else
-            warn("❌ Error al cargar URL")
+            warn("❌ Error al descargar script")
         end
     end
 end
@@ -83,4 +113,4 @@ end
 -- ❌ NO SOPORTADO
 ---------------------------------------------------
 
-warn("❌ Juego no soportado")
+log("Juego no soportado ❌")
