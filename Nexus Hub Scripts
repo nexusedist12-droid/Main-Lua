@@ -15,9 +15,9 @@ local Sea = "Unknown"
 
 if place == 2753915549 then
     Sea = "First"
-elseif place == 4442272183 then
+elseif place == 2753915549 then
     Sea = "Second"
-elseif place == 7449423635 then
+elseif place == 2753915549 then
     Sea = "Third"
 end
 
