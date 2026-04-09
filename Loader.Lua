@@ -6,7 +6,7 @@ local _ENV = (getgenv or getrenv or getfenv)()
 
 local Scripts = {
     {
-        GameId = 994732206,
+        GameId = 2753915549,
         UrlPath = "Main.lua"
     },
     {
