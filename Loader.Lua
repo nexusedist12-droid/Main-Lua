@@ -20,7 +20,7 @@ local Scripts = {
 ---------------------------------------------------
 
 local urls = {}
-urls.Repository = "https://raw.githubusercontent.com/nexusedist12-droid/Main-Lua/main/"
+urls.Repository = "https://github.com/nexusedist12-droid/Main-Lua"
 
 ---------------------------------------------------
 -- ⚡ ANTI SPAM EXEC
