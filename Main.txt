@@ -1,0 +1,14 @@
+-- 🌌 NEXUS LOADER FLAG (protección)
+if not getgenv().NEXUS_LOADER then
+    return warn("❌ Ejecuta esto desde Nexus Loader")
+end
+
+-- Anti doble ejecución
+if getgenv().NexusLoaded then
+    return warn("⚠️ Nexus ya está ejecutado")
+end
+getgenv().NexusLoaded = true
+
+if not getgenv().NEXUS_LOADER then
+    return warn("❌ Ejecuta esto desde Nexus Loader")
+end
